@@ -6,10 +6,12 @@
 #define SERVICE_UUID2 "43f2e64b-1a47-4f82-9404-256bb1451fe1"
 #define CHARACTERISTIC_UUID1 "4fb93a90-6721-4b0e-86cd-866b2b36af24"
 #define CHARACTERISTIC_UUID2 "e68ff4e7-dad5-4871-b9ef-28c8c495c5ab"
+#define CHARACTERISTIC_UUID3 "d66dfc41-2211-4866-9538-f48f4d0d02c7"
 
 int value = 0;
 BLECharacteristic *pCharacteristic1 = NULL;
 BLECharacteristic *pCharacteristic2 = NULL;
+BLECharacteristic *pCharacteristic3 = NULL;
 
 class MyServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -17,7 +19,7 @@ class MyServerCallbacks : public BLEServerCallbacks {
   }
   void onDisconnect(BLEServer* pServer) {
     Serial.println("Disconnected");
-    delay(2000);
+    delay(100);
     BLEDevice::startAdvertising();
   }
 };
@@ -42,6 +44,7 @@ void setup() {
   pService1->createCharacteristic(CHARACTERISTIC_UUID1, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_WRITE_NR);
   pCharacteristic2 = 
   pService2->createCharacteristic(CHARACTERISTIC_UUID2, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE);
+  pCharacteristic3 = pService1->createCharacteristic(CHARACTERISTIC_UUID3, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE);
 
   //Membuat BLE Descriptor
   pCharacteristic1->addDescriptor(new BLE2902());
@@ -54,8 +57,10 @@ void setup() {
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID1);
   pAdvertising->addServiceUUID(SERVICE_UUID2);
+  pAdvertising->addServiceUUID(SERVICE_UUID1);
   pCharacteristic1->setValue("Hello World says Neil1");
   pCharacteristic2->setValue("Hello World says Neil2");
+  pCharacteristic3->setValue("Hello World says Neil3");
   pAdvertising->start();
   Serial.println("BLE Advertising Inisialisasi");
 }
